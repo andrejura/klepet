@@ -1,7 +1,9 @@
 function divElementEnostavniTekst(sporocilo) {
   var jeSmesko = sporocilo.indexOf('http://sandbox.lavbic.net/teaching/OIS/gradivo/') > -1;
-  if (jeSmesko) {
-    sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace('&lt;img', '<img').replace('png\' /&gt;', 'png\' />');
+  var jeSlika = sporocilo.indexOf('<img class="slike" src=\"') > -1;
+  if (jeSmesko || jeSlika) {
+    sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/&lt;img src='http:\/\/sandbox.lavbic.net/g, '<img src=\'http://sandbox.lavbic.net').replace(/png\' \/&gt;/g, 'png\' />');
+    sporocilo = sporocilo.replace(/&lt;br&gt;&lt;img class="slike"/g, '<br><img class="slike"').replace(/png" \/&gt;/g, 'png" />').replace(/jpg" \/&gt;/g, 'jpg" />').replace(/gif" \/&gt;/g, 'gif" />');
     return $('<div style="font-weight: bold"></div>').html(sporocilo);
   } else {
     return $('<div style="font-weight: bold;"></div>').text(sporocilo);
@@ -15,6 +17,7 @@ function divElementHtmlTekst(sporocilo) {
 function procesirajVnosUporabnika(klepetApp, socket) {
   var sporocilo = $('#poslji-sporocilo').val();
   sporocilo = dodajSmeske(sporocilo);
+  sporocilo = dodajSliko(sporocilo);
   var sistemskoSporocilo;
 
   if (sporocilo.charAt(0) == '/') {
@@ -136,4 +139,12 @@ function dodajSmeske(vhodnoBesedilo) {
       preslikovalnaTabela[smesko] + "' />");
   }
   return vhodnoBesedilo;
+}
+function dodajSliko(vhodnoBesedilo) {
+  var slik = vhodnoBesedilo.toString().match(/\b(https?):\/\/(\S+)(png|jpg|gif)\b/gi);
+  for (var pic in slik) {
+    vhodnoBesedilo = vhodnoBesedilo + (' <br><img class="slike" src="' + slik[pic] + '" />');
+  } 
+  return vhodnoBesedilo;
+  
 }
