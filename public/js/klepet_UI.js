@@ -1,8 +1,10 @@
 function divElementEnostavniTekst(sporocilo) {
   var jeSmesko = sporocilo.indexOf('http://sandbox.lavbic.net/teaching/OIS/gradivo/') > -1;
-  if (jeSmesko) {
+  var jeVideo = sporocilo.indexOf(/^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/) > -1;
+  if (jeSmesko || jeVideo) {
     sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace('&lt;img', '<img').replace('png\' /&gt;', 'png\' />');
-    return $('<div style="font-weight: bold"></div>').html(sporocilo);
+    sporocilo = sporocilo.replace(/(?:http:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g, '<iframe class="video" src="http://www.youtube.com/embed/$1" allowfullscreen></iframe>').replace(/(?:http:\/\/)?(?:www\.)?(?:vimeo\.com)\/(.+)/g, '<iframe src="//player.vimeo.com/video/$1" width="200" height="100" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>');
+  return $('<div style="font-weight: bold"></div>').html(sporocilo);
   } else {
     return $('<div style="font-weight: bold;"></div>').text(sporocilo);
   }
@@ -15,6 +17,7 @@ function divElementHtmlTekst(sporocilo) {
 function procesirajVnosUporabnika(klepetApp, socket) {
   var sporocilo = $('#poslji-sporocilo').val();
   sporocilo = dodajSmeske(sporocilo);
+  sporocilo = dodajVideo(sporocilo);
   var sistemskoSporocilo;
 
   if (sporocilo.charAt(0) == '/') {
@@ -123,11 +126,19 @@ function dodajSmeske(vhodnoBesedilo) {
     "(y)": "like.png",
     ":*": "kiss.png",
     ":(": "sad.png"
-  }
+  };
   for (var smesko in preslikovalnaTabela) {
     vhodnoBesedilo = vhodnoBesedilo.replace(smesko,
       "<img src='http://sandbox.lavbic.net/teaching/OIS/gradivo/" +
       preslikovalnaTabela[smesko] + "' />");
+  }
+  return vhodnoBesedilo;
+}
+function dodajVideo(vhodnoBesedilo) {
+  var ytVid = vhodnoBesedilo.match(/\b(https?):\/\/www.youtube.com(\S+)\b/gi);
+  for (var vidYt in ytVid) {
+    var tabelaYt = ytVid[vidYt].split("=");
+    vhodnoBesedilo = vhodnoBesedilo + ('<iframe class="video" src=\'https://www.youtube.com/embed/'+tabelaYt[1]+'\' allowfullscreen></iframe>');
   }
   return vhodnoBesedilo;
 }
