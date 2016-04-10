@@ -135,10 +135,10 @@ function dodajSmeske(vhodnoBesedilo) {
   return vhodnoBesedilo;
 }
 function dodajVideo(vhodnoBesedilo) {
-  var ytVid = vhodnoBesedilo.match(/\b(https?):\/\/www.youtube.com(\S+)\b/gi);
+  var ytVid = vhodnoBesedilo.match(/^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/);
   for (var vidYt in ytVid) {
     var tabelaYt = ytVid[vidYt].split("=");
-    vhodnoBesedilo = vhodnoBesedilo + ('<iframe class="video" src=\'https://www.youtube.com/embed/'+tabelaYt[1]+'\' allowfullscreen></iframe>');
+    vhodnoBesedilo = vhodnoBesedilo + ('<iframe class="video" src="https://www.youtube.com/embed/' + tabelaYt[1] + '" allowfullscreen></iframe>');
   }
   return vhodnoBesedilo;
 }
