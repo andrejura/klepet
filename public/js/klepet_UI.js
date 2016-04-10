@@ -3,7 +3,7 @@ function divElementEnostavniTekst(sporocilo) {
   var jeSlika = sporocilo.indexOf('<img class="slike" src=\"') > -1;
   if (jeSmesko || jeSlika) {
     sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/&lt;img src='http:\/\/sandbox.lavbic.net/g, '<img src=\'http://sandbox.lavbic.net').replace(/png\' \/&gt;/g, 'png\' />');
-     sporocilo = sporocilo.replace(/&lt;br&gt;&lt;img class="slike"/g, '<br><img class="slike"').replace(/png" \/&gt;/g, 'png" />').replace(/jpg" \/&gt;/g, 'jpg" />').replace(/gif" \/&gt;/g, 'gif" />');
+    sporocilo = sporocilo.replace(/&lt;br&gt;&lt;img class="slike"/g, '<br><img class="slike"').replace(/png" \/&gt;/g, 'png" />').replace(/jpg" \/&gt;/g, 'jpg" />').replace(/gif" \/&gt;/g, 'gif" />');
     return $('<div style="font-weight: bold"></div>').html(sporocilo);
   } else {
     return $('<div style="font-weight: bold;"></div>').text(sporocilo);
